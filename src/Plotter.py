@@ -23,6 +23,10 @@ class Plotter:
         self.som = None
         # matriz de datos (obtenidos desde un archivo csv)
         self.data = None
+        # tipo por defecto de rejilla
+        self.default_grid_topology = "Cruz"
+        self.default_max_iter = 100
+        self.default_grid_size = 5
 
         # inicializamos la ventana principal
         self.window = Tk()
@@ -44,7 +48,11 @@ class Plotter:
             df = pd.read_csv(file)
             # guarda la información en una matriz
             self.data = np.array(df)
-            print("data: ", self.data)
+            shape = self.data.shape
+            self.file_shape['text'] = f'Tamaño: ({shape[0]}, {shape[1]})'
+            # creamos la instancia del SOM
+            grid_shape = (int(self.grid_size1.get()), int(self.grid_size2.get())) 
+            self.som = SOM(shape, self.grid_topology.get(), grid_shape)
 
     def run(self):
         """es ejecutada cuando el botón de «entrenar» es presionado"""
