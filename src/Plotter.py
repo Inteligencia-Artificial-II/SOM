@@ -7,23 +7,23 @@ import pandas as pd
 
 class Plotter:
     def __init__(self):
+        # punto mínimo y máximo del canvas
         self.ax_max = 5
         self.ax_min = -5
         self.fig = plt.figure(1)
-        self.fig2 = plt.figure(2)
         self.ax = self.fig.add_subplot(111)
-        self.ax2 = self.fig2.add_subplot(111)
         # establecemos los limites de la gráfica
         self.ax.set_xlim([self.ax_min, self.ax_max])
         self.ax.set_ylim([self.ax_min, self.ax_max])
+        # establecemos el color del canvas
         self.ax.set_facecolor("#dedede")
-        self.ax2.set_facecolor("#dedede")
 
         # definimos la que será una instancia de la clase som
         self.som = None
         # matriz de datos (obtenidos desde un archivo csv)
         self.data = None
-        # tipo por defecto de rejilla
+
+        # valores por defecto para la interfaz
         self.default_grid_topology = "Cruz"
         self.default_max_iter = 100
         self.default_grid_size = 5
