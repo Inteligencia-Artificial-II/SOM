@@ -70,7 +70,7 @@ class Graph:
         if not self.graph.get(origin, False):
             print("The origin doesn't exist")
             return
-        return self.graph[origin]
+        return list(self.graph[origin].keys())
 
 
     def Contains(self, origin):
