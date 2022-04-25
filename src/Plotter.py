@@ -51,7 +51,7 @@ class Plotter:
             shape = self.data.shape
             self.file_shape['text'] = f'Tamaño: ({shape[0]}, {shape[1]})'
             # creamos la instancia del SOM
-            grid_shape = (int(self.grid_size1.get()), int(self.grid_size2.get())) 
+            grid_shape = (int(self.grid_size1.get()), int(self.grid_size2.get()))
             self.som = SOM(shape, self.grid_topology.get(), grid_shape)
 
     def run(self):

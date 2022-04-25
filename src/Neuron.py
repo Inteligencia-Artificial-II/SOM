@@ -8,4 +8,3 @@ class Neuron:
 
     def __repr__(self):
         return str(self.id)
-        

@@ -9,20 +9,29 @@ class SOM:
         self.grid_topology = topology
         # tamaño del vector de pesos de las neuronas
         self.weights_size = w_size
-        
+
         # vecindario de neuronas
         self.neighborhood = Graph()
         self.id = 0
 
-        self.create_neighborhood()
         self.neurons = []
 
         # neurona ganadora por iteración
         self.bmu = None
-    
-    def create_neighborhood(self):
-        """Usa los parámetros de la rejilla
-           para crear un gráfo"""
+
+
+        self.create_neighborhood()
+
+    def create_star_topology(self):
+        for i in range(1, self.grid_shape[0]):
+            for j in range(self.grid_shape[1]):
+                # Se revisa que los índices no sean negativos
+                if j - 1 >= 0:
+                    self.neighborhood.CreateEdge((i, j), (i - 1, j - 1), 1)
+                if j + 1 < self.grid_shape[1]:
+                    self.neighborhood.CreateEdge((i, j), (i - 1, j + 1), 1)
+
+    def create_cross_topology(self):
         # crea la topologia de cruz para la rejilla
         for i in range(self.grid_shape[0]):
             row = []
@@ -30,15 +39,20 @@ class SOM:
                 row.append(Neuron(self.weights_size, self.get_id()))
 
                 # fila actual
-                if j != self.grid_shape[1] - 1: 
-                    self.neighborhood.CreateEdge((i, j),(i, j+1), 1)
-                    # filas previas
-                    if i != 0:
-                        prev_row = i - 1 
-                        self.neighborhood.CreateEdge((i, j),(prev_row, j), 1)
+                if j < self.grid_shape[1] - 1:
+                    self.neighborhood.CreateEdge((i, j),(i, j + 1), 1)
+                # filas previas
+                if i > 0:
+                    prev_row = i - 1
+                    self.neighborhood.CreateEdge((i, j),(prev_row, j), 1)
             self.neurons.append(row[:])
 
-        # TODO: topologia de estrella
+    def create_neighborhood(self):
+        """Usa los parámetros de la rejilla
+           para crear un gráfo"""
+        self.create_cross_topology()
+        if self.grid_topology == "Estrella":
+            self.create_star_topology()
 
     def get_id(self):
         self.id += 1

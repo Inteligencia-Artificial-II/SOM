@@ -30,12 +30,12 @@ class Graph:
 
             if self.graph.get(origin, False):
                 o_d = self.graph[origin]
-            
+
             o_d[destiny] = cost
 
             if self.graph.get(destiny):
                 d_o = self.graph[destiny]
-            
+
             d_o[origin] = cost
 
             self.graph[origin] = o_d
@@ -50,7 +50,7 @@ class Graph:
 
         for i in range(0, size):
             auxDict = dict(self.graph[keys[i]])
-            subKeys = list(auxDict.keys()) 
+            subKeys = list(auxDict.keys())
             subSize = len(auxDict)
             for j in range(0, subSize):
                 print("(", keys[i], ",", auxDict[subKeys[j]],
@@ -64,7 +64,7 @@ class Graph:
             return
         return self.graph[origin][destiny]
 
-        
+
     def GetNeighbors(self, origin):
         """Obtiene todos los vecinos de un nodo origen"""
         if not self.graph.get(origin, False):

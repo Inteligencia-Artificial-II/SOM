@@ -52,6 +52,6 @@ def render_main_window(self):
     self.load_file.grid(row=2, column=2, padx=8, sticky="we")
     self.train_btn.grid(row=2, column=3, sticky="we")
     self.file_shape.grid(row=0, column=3, padx=20, sticky="we")
-    
+
     # termina el programa al hacer click en la X roja de la ventana
     self.window.protocol('WM_DELETE_WINDOW', lambda: exit())
