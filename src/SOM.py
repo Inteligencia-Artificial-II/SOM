@@ -37,7 +37,7 @@ class SOM:
         for i in range(self.grid_shape[0]):
             row = []
             for j in range(self.grid_shape[1]):
-                row.append(Neuron(self.weights_size, self.get_id()))
+                row.append(Neuron(self.weights_size, self.get_id(), i, j))
 
                 # fila actual
                 if j < self.grid_shape[1] - 1:

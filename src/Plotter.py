@@ -87,12 +87,18 @@ class Plotter:
         # limpiamos el canvas
         plt.cla()
         for p in points:
+            # obtenemos las coordenadas de la neurona "p"
+            x = self.som.neurons[p[0]][p[1]].x
+            y = self.som.neurons[p[0]][p[1]].y
             # gráficamos los puntos de origen
-            plt.plot(p[0], p[1], 'o', color='red')
+            plt.plot(x, y, 'o', color='red')
 
             # gráficamos las conexiones del punto "p"
             for dest in neighborhood.GetNeighbors(p):
-                plt.plot((p[0], dest[0]), (p[1], dest[1]), color='blue')
+                # obtenemos las coordenadas de los puntos de destino
+                x_dest = self.som.neurons[dest[0]][dest[1]].x
+                y_dest = self.som.neurons[dest[0]][dest[1]].y
+                plt.plot((x, x_dest), (y, y_dest), color='blue')
 
         # dibujamos los puntos seteados
         self.fig.canvas.draw()
