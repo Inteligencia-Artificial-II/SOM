@@ -19,16 +19,19 @@ def render_main_window(self):
     self.grid_size1 = ttk.Combobox(self.params_container, state="readonly")
     self.grid_size1["values"] = list(range(1, 100))
     self.grid_size1.set(self.default_grid_size)
+    self.grid_size1.bind('<<ComboboxSelected>>', self.check_topology)
 
     self.grid_size2 = ttk.Combobox(self.params_container, state="readonly")
     self.grid_size2["values"] = list(range(1, 100))
     self.grid_size2.set(self.default_grid_size)
+    self.grid_size2.bind('<<ComboboxSelected>>', self.check_topology)
 
     # sección para elegir el tipo de rejilla
     Label(self.params_container, text="Tipo de rejilla: ", bg="white").grid(row=1, column=0, sticky="e")
     self.grid_topology = ttk.Combobox(self.params_container, state="readonly")
     self.grid_topology["values"] = ["Cruz", "Estrella"] # tipos de rejilla
     self.grid_topology.set(self.default_grid_topology) # usamos como valor inicial "Cruz"
+    self.grid_topology.bind('<<ComboboxSelected>>', self.check_topology)
 
     # número de iteraciones máximas
     Label(self.params_container, text="Iteraciones máximas: ", bg="white").grid(row=2, column=0, sticky="e")

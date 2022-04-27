@@ -19,10 +19,10 @@ class SOM:
         # neurona ganadora por iteración
         self.bmu = None
 
-
         self.create_neighborhood()
 
     def create_star_topology(self):
+        """Añade las conexiones en diagonal al grafo"""
         for i in range(1, self.grid_shape[0]):
             for j in range(self.grid_shape[1]):
                 # Se revisa que los índices no sean negativos
@@ -32,6 +32,7 @@ class SOM:
                     self.neighborhood.CreateEdge((i, j), (i - 1, j + 1), 1)
 
     def create_cross_topology(self):
+        """Añade las conexiones verticales y horizontales al grafo"""
         # crea la topologia de cruz para la rejilla
         for i in range(self.grid_shape[0]):
             row = []
@@ -55,6 +56,8 @@ class SOM:
             self.create_star_topology()
 
     def get_id(self):
+        """Obtiene un identificador único para 
+           las instancias de las neuronas"""
         self.id += 1
         return self.id
 
