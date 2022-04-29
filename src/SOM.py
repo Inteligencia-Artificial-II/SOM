@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from src.Graph import Graph
 from src.Neuron import Neuron
 
@@ -16,8 +17,12 @@ class SOM:
 
         self.neurons = []
 
+        # Learning rate
+        self.lr = 0.4
+
         # neurona ganadora por iteración
         self.bmu = None
+        self.bmu_index = (0, 0)
 
         self.create_neighborhood()
 
@@ -56,11 +61,26 @@ class SOM:
             self.create_star_topology()
 
     def get_id(self):
-        """Obtiene un identificador único para 
+        """Obtiene un identificador único para
            las instancias de las neuronas"""
         self.id += 1
         return self.id
 
-    def train(self):
-        """Función que entrena la red"""
+    def update_weights(self):
         pass
+
+
+    def train(self, epochs: int, input_data):
+        """Función que entrena la red"""
+        for epoch in range(epochs):
+            for Dt in input_data:
+                # Se reseta el bmu y el bmu index por cada dato de entrada
+                self.bmu = float("inf")
+                self.bmu_index = (0, 0)
+                for i, row in enumerate(self.neurons):
+                    for j, neuron in enumerate(row):
+                        current_dist = np.sqrt(np.sum(Dt - neuron.w) ** 2)
+                        if current_dist < self.bmu:
+                            self.bmu = current_dist
+                            self.bmu_index = (i, j)
+                # Se actualizan los pesos del bmu y de su vecindad
