@@ -45,6 +45,7 @@ def render_main_window(self):
     self.load_file = Button(self.params_container, bg="white", text="Cargar archivo", command=self.open_file)
     # boton para entrenar
     self.train_btn = Button(self.params_container, bg="white", text="Entrenar", command=self.run)
+    self.restart_btn = Button(self.params_container, bg="white", text="Reiniciar", command=self.restart)
 
     # empaquetado de componenetes
     self.params_container.grid(row=5, column=0, columnspan=4, sticky="we")
@@ -55,6 +56,7 @@ def render_main_window(self):
     self.load_file.grid(row=2, column=2, padx=8, sticky="we")
     self.train_btn.grid(row=2, column=3, sticky="we")
     self.file_shape.grid(row=0, column=3, padx=20, sticky="we")
+
 
     # termina el programa al hacer click en la X roja de la ventana
     self.window.protocol('WM_DELETE_WINDOW', lambda: exit())

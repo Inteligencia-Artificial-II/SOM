@@ -4,6 +4,7 @@ from src.UI import render_main_window
 from src.SOM import SOM
 import numpy as np
 import pandas as pd
+from matplotlib.cm import get_cmap
 
 class Plotter:
     def __init__(self):
@@ -78,11 +79,24 @@ class Plotter:
         # gráficamos la rejilla
         self.draw_grid()
 
-    def draw_grid(self):
+    def get_offset(self, points):
+        """Obtiene un offset para evitar valores menores a cero"""
+        clusters = []
+        for p in points:
+            x = self.som.neurons[p[0]][p[1]].x
+            y = self.som.neurons[p[0]][p[1]].y
+            weights = self.som.neurons[x][y].w
+            clusters.append(np.sum(np.trunc(weights)))
+
+        min_cluster = np.amin(np.array(clusters))
+        return np.absolute(min_cluster) + 1 
+
+    def draw_grid(self, trained = False):
         """Dibuja la rejilla en el canvas"""
         # obtenemos el grafo
         neighborhood = self.som.neighborhood
         points = list(neighborhood.graph.keys())
+        cmap = get_cmap('flag')
 
         # limpiamos el canvas
         plt.cla()
@@ -98,12 +112,18 @@ class Plotter:
                 y_dest = self.som.neurons[dest[0]][dest[1]].y
                 plt.plot((x, x_dest), (y, y_dest), color='blue')
 
+        offset = self.get_offset(points)
         for p in points:
             # obtenemos las coordenadas de la neurona "p"
             x = self.som.neurons[p[0]][p[1]].x
             y = self.som.neurons[p[0]][p[1]].y
+
+            weights = self.som.neurons[x][y].w
+            cluster = np.sum(np.trunc(weights)) + offset
+            color = cmap(float(cluster/100)) if trained else 'red'
+
             # gráficamos los puntos de origen
-            plt.plot(x, y, 'o', color='red')
+            plt.plot(x, y, 'o', color=color)
 
 
         # dibujamos los puntos seteados
@@ -112,8 +132,34 @@ class Plotter:
     def run(self):
         """es ejecutada cuando el botón de «entrenar» es presionado"""
         if self.som != None:
+            self.train_btn.grid_remove()
+            
+            # entrenamos la red
             self.som.train(int(self.max_iter.get()), self.data)
+            self.draw_grid(True)
+    
+            self.restart_btn.grid(row=2, column=3, sticky="we")
+
 
     def restart(self):
         """devuelve los valores y elementos gráficos a su estado inicial"""
-        pass
+        # restablecemos los valores por defecto
+        self.som = None
+        self.data = None
+        self.data_shape = None
+        self.default_grid_topology = "Cruz"
+        self.default_max_iter = 100
+        self.default_grid_size = 5
+
+        # limpiamos el canvas
+        plt.cla()
+        self.fig.canvas.draw()
+
+        # devolvemos la interfaz a su estado inicial
+        self.train_btn.grid(row=2, column=3, sticky="we")
+        self.restart_btn.grid_remove()
+        self.grid_size1.set(self.default_grid_size)
+        self.grid_size2.set(self.default_grid_size)
+        self.grid_topology.set(self.default_grid_topology)
+        self.max_iter.set(self.default_max_iter)
+

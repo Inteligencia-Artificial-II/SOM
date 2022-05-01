@@ -17,8 +17,10 @@ class SOM:
 
         self.neurons = []
 
-        # Learning rate
-        self.lr = 0.4
+        # Learning rates
+        self.lr = None
+        # sigmas
+        self.sigma = None
 
         # neurona ganadora por iteración
         self.bmu = None
@@ -66,21 +68,56 @@ class SOM:
         self.id += 1
         return self.id
 
-    def update_weights(self):
-        pass
+    def euclidean_distance(self, x1, x2):
+        return np.sqrt(np.sum((x1 - x2) ** 2))
 
+    def theta(self, epoch, origin, neighbor):
+        distance = self.euclidean_distance(origin.w, neighbor.w)
+        return np.exp(-(distance/self.sigma[epoch]))
+
+    def update_weights(self, epoch, Dt):
+        row = self.bmu_index[0]
+        col = self.bmu_index[1]
+        # obtenemos los vecionos de la mejor neurona
+        neighbors = self.neighborhood.GetNeighbors(self.bmu_index)
+        origin = self.neurons[row][col]
+
+        # actualizamos la neurona ganadora
+        self.neurons[row][col].w += self.theta(epoch, origin, origin) * self.lr[epoch] * (Dt - origin.w)
+
+        # actualizamos su vecindario de neuronas
+        for n in neighbors:
+            row = n[0]
+            col = n[1]
+            destiny = self.neurons[row][col]
+            self.neurons[row][col].w += self.theta(epoch, origin, destiny) * self.lr[epoch] * (Dt - destiny.w)
+
+    def print_weights(self):
+        for i in range(len(self.neurons)):
+            for j in range(len(self.neurons[i])):
+                print(self.neurons[i][j]," : ", self.neurons[i][j].w)
 
     def train(self, epochs: int, input_data):
         """Función que entrena la red"""
+        # inicializamos los parámetros de acuerdo a las epocas máximas
+        self.lr = np.linspace(0, 1, epochs)
+        self.sigma = np.linspace(10, 1, epochs)
+
+        self.print_weights()
+
         for epoch in range(epochs):
+            print("Epoch: ", epoch)
             for Dt in input_data:
                 # Se reseta el bmu y el bmu index por cada dato de entrada
                 self.bmu = float("inf")
                 self.bmu_index = (0, 0)
                 for i, row in enumerate(self.neurons):
                     for j, neuron in enumerate(row):
-                        current_dist = np.sqrt(np.sum(Dt - neuron.w) ** 2)
+                        current_dist = self.euclidean_distance(Dt, neuron.w)
                         if current_dist < self.bmu:
                             self.bmu = current_dist
                             self.bmu_index = (i, j)
                 # Se actualizan los pesos del bmu y de su vecindad
+                self.update_weights(epoch, Dt)
+        
+        self.print_weights()
