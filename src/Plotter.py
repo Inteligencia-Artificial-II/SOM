@@ -5,6 +5,7 @@ from src.SOM import SOM
 import numpy as np
 import pandas as pd
 from matplotlib.cm import get_cmap
+import scipy.stats as stats
 
 class Plotter:
     def __init__(self):
@@ -47,6 +48,8 @@ class Plotter:
         df = pd.read_csv(file)
         # guarda la información en una matriz
         self.data = np.array(df)
+        # normalizamos los datos
+        self.data = stats.zscore(self.data)
         self.data_shape = self.data[0].shape
         self.file_shape['text'] = f'Tamaño: ({self.data.shape[0]}, {self.data.shape[1]})'
         self.init_som()
@@ -128,6 +131,7 @@ class Plotter:
 
         # dibujamos los puntos seteados
         self.fig.canvas.draw()
+        self.fig.canvas.flush_events()
 
     def run(self):
         """es ejecutada cuando el botón de «entrenar» es presionado"""
@@ -135,6 +139,7 @@ class Plotter:
             self.train_btn.grid_remove()
             
             # entrenamos la red
+            self.som.draw_grid = self.draw_grid
             self.som.train(int(self.max_iter.get()), self.data)
             self.draw_grid(True)
     

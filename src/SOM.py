@@ -26,6 +26,9 @@ class SOM:
         self.bmu = None
         self.bmu_index = (0, 0)
 
+        # función para dibujar los cambios en la rejilla
+        self.draw_grid = None
+
         self.create_neighborhood()
 
     def create_star_topology(self):
@@ -119,5 +122,7 @@ class SOM:
                             self.bmu_index = (i, j)
                 # Se actualizan los pesos del bmu y de su vecindad
                 self.update_weights(epoch, Dt)
+            if self.draw_grid != None:
+                self.draw_grid(True)
         
         self.print_weights()
