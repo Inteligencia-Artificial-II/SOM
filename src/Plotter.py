@@ -113,7 +113,7 @@ class Plotter:
                 # obtenemos las coordenadas de los puntos de destino
                 x_dest = self.som.neurons[dest[0]][dest[1]].x
                 y_dest = self.som.neurons[dest[0]][dest[1]].y
-                plt.plot((x, x_dest), (y, y_dest), color='blue')
+                plt.plot((x, x_dest), (y, y_dest), color='white')
 
         offset = self.get_offset(points)
         for p in points:
