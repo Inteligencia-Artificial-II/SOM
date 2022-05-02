@@ -82,14 +82,10 @@ class SOM:
 
     def update_weights(self, epoch, Dt):
         """Actualiza los pesos de las neuronas ganadoras"""
-        row = self.bmu_index[0]
-        col = self.bmu_index[1]
-
-        print("bmu_index: ", self.bmu_index)
+        row, col = self.bmu_index
 
         # obtenemos los vecinos de la mejor neurona
         neighbors = self.neighborhood.GetNeighbors(self.bmu_index)
-        print("vecinos: ", neighbors)
         origin = self.neurons[row][col]
 
         # actualizamos la neurona ganadora
@@ -100,19 +96,11 @@ class SOM:
             destiny = self.neurons[row][col]
             destiny.w += self.theta(epoch, origin, destiny) * self.lr[epoch] * (Dt - destiny.w)
 
-    def print_weights(self):
-        """Imprime los pesos de las neuronas de la rejilla"""
-        for i in range(len(self.neurons)):
-            for j in range(len(self.neurons[i])):
-                print(self.neurons[i][j]," : ", self.neurons[i][j].w)
-
     def train(self, epochs: int, input_data):
         """Función que entrena la red"""
         # inicializamos los parámetros de acuerdo a las epocas máximas
-        self.lr = np.linspace(0, 1, epochs)
+        self.lr = np.linspace(0.1, 1, epochs)
         self.sigma = np.linspace(10, 1, epochs)
-
-        self.print_weights()
 
         for epoch in range(epochs):
             print("Epoch: ", epoch)
@@ -133,4 +121,3 @@ class SOM:
             # se colorean las neuronas de la rejilla
             if self.draw_grid != None:
                 self.draw_grid(True, self.bmu_index)
-            input()

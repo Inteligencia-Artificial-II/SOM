@@ -107,7 +107,6 @@ class Plotter:
                 plt.plot((x, x_dest), (y, y_dest), color='#664b6b')
 
         offset = self.get_offset(points)
-        print("w[0,0]: ", self.som.neurons[0][0].w )
         for x, y in points:
             weights = self.som.neurons[x][y].w
             cluster = np.sum(np.trunc(weights)) + offset

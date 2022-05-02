@@ -15,5 +15,6 @@
     <li><a href="https://docs.python.org/3/library/tkinter.html" rel="external">Tkinter</a></li>
     <li><a href="https://matplotlib.org/" rel="external">Matplotlib</a></li>
     <li><a href="https://numpy.org/" rel="external">Numpy</a></li>
+    <li><a href="https://scipy.org/" rel="external">Scipy</a></li>
   </ul>
  </div>
