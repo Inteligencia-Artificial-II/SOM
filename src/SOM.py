@@ -47,7 +47,7 @@ class SOM:
         for i in range(self.grid_shape[0]):
             row = []
             for j in range(self.grid_shape[1]):
-                row.append(Neuron(self.weights_size, self.get_id(), i, j))
+                row.append(Neuron(self.weights_size, self.get_id()))
 
                 # fila actual
                 if j < self.grid_shape[1] - 1:
@@ -72,30 +72,36 @@ class SOM:
         return self.id
 
     def euclidean_distance(self, x1, x2):
+        """Retorna la distancia euclidiana entre 2 puntos"""
         return np.sqrt(np.sum((x1 - x2) ** 2))
 
     def theta(self, epoch, origin, neighbor):
+        """Realiza la función de vecindad"""
         distance = self.euclidean_distance(origin.w, neighbor.w)
         return np.exp(-(distance/self.sigma[epoch]))
 
     def update_weights(self, epoch, Dt):
+        """Actualiza los pesos de las neuronas ganadoras"""
         row = self.bmu_index[0]
         col = self.bmu_index[1]
-        # obtenemos los vecionos de la mejor neurona
+
+        print("bmu_index: ", self.bmu_index)
+
+        # obtenemos los vecinos de la mejor neurona
         neighbors = self.neighborhood.GetNeighbors(self.bmu_index)
+        print("vecinos: ", neighbors)
         origin = self.neurons[row][col]
 
         # actualizamos la neurona ganadora
-        self.neurons[row][col].w += self.theta(epoch, origin, origin) * self.lr[epoch] * (Dt - origin.w)
+        origin.w += self.theta(epoch, origin, origin) * self.lr[epoch] * (Dt - origin.w)
 
         # actualizamos su vecindario de neuronas
-        for n in neighbors:
-            row = n[0]
-            col = n[1]
+        for row, col in neighbors:
             destiny = self.neurons[row][col]
-            self.neurons[row][col].w += self.theta(epoch, origin, destiny) * self.lr[epoch] * (Dt - destiny.w)
+            destiny.w += self.theta(epoch, origin, destiny) * self.lr[epoch] * (Dt - destiny.w)
 
     def print_weights(self):
+        """Imprime los pesos de las neuronas de la rejilla"""
         for i in range(len(self.neurons)):
             for j in range(len(self.neurons[i])):
                 print(self.neurons[i][j]," : ", self.neurons[i][j].w)
@@ -110,6 +116,7 @@ class SOM:
 
         for epoch in range(epochs):
             print("Epoch: ", epoch)
+            
             for Dt in input_data:
                 # Se reseta el bmu y el bmu index por cada dato de entrada
                 self.bmu = float("inf")
@@ -119,10 +126,11 @@ class SOM:
                         current_dist = self.euclidean_distance(Dt, neuron.w)
                         if current_dist < self.bmu:
                             self.bmu = current_dist
-                            self.bmu_index = (i, j)
+                            self.bmu_index = (i, j) 
                 # Se actualizan los pesos del bmu y de su vecindad
                 self.update_weights(epoch, Dt)
+            
+            # se colorean las neuronas de la rejilla
             if self.draw_grid != None:
-                self.draw_grid(True)
-        
-        self.print_weights()
+                self.draw_grid(True, self.bmu_index)
+            input()

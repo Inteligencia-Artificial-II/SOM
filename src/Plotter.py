@@ -85,16 +85,14 @@ class Plotter:
     def get_offset(self, points):
         """Obtiene un offset para evitar valores menores a cero"""
         clusters = []
-        for p in points:
-            x = self.som.neurons[p[0]][p[1]].x
-            y = self.som.neurons[p[0]][p[1]].y
+        for x, y in points:
             weights = self.som.neurons[x][y].w
             clusters.append(np.sum(np.trunc(weights)))
 
         min_cluster = np.amin(np.array(clusters))
-        return np.absolute(min_cluster) + 1 
+        return np.absolute(min_cluster)
 
-    def draw_grid(self, trained = False):
+    def draw_grid(self, trained = False, best = None):
         """Dibuja la rejilla en el canvas"""
         # obtenemos el grafo
         neighborhood = self.som.neighborhood
@@ -103,30 +101,25 @@ class Plotter:
 
         # limpiamos el canvas
         plt.cla()
-        for p in points:
-            # obtenemos las coordenadas de la neurona "p"
-            x = self.som.neurons[p[0]][p[1]].x
-            y = self.som.neurons[p[0]][p[1]].y
-
+        for x, y in points:
             # gráficamos las conexiones del punto "p"
-            for dest in neighborhood.GetNeighbors(p):
-                # obtenemos las coordenadas de los puntos de destino
-                x_dest = self.som.neurons[dest[0]][dest[1]].x
-                y_dest = self.som.neurons[dest[0]][dest[1]].y
-                plt.plot((x, x_dest), (y, y_dest), color='blue')
+            for x_dest, y_dest in neighborhood.GetNeighbors((x,y)):
+                plt.plot((x, x_dest), (y, y_dest), color='#664b6b')
 
         offset = self.get_offset(points)
-        for p in points:
-            # obtenemos las coordenadas de la neurona "p"
-            x = self.som.neurons[p[0]][p[1]].x
-            y = self.som.neurons[p[0]][p[1]].y
-
+        print("w[0,0]: ", self.som.neurons[0][0].w )
+        for x, y in points:
             weights = self.som.neurons[x][y].w
             cluster = np.sum(np.trunc(weights)) + offset
             color = cmap(float(cluster/100)) if trained else 'red'
 
+            # cambiamos el color en caso de encontrar la neurona ganadora
+            if best != None:
+                if best == (x, y):
+                    color = 'green'
+                
             # gráficamos los puntos de origen
-            plt.plot(x, y, 'o', color=color)
+            plt.plot(x, y, 'o', color=color, markersize=12)
 
 
         # dibujamos los puntos seteados
